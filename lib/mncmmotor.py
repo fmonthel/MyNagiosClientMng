@@ -25,10 +25,48 @@ class MncmMotor :
         # Testing readable file and dir
         if not os.access(self.myhostgroups_file, os.R_OK) :
             raise RuntimeError('Nagios file "' + self.myhostgroups_file + '" is not readable or not exists :(')
+        self.logger.debug('Nagios file "' + self.myhostgroups_file + '" is readable')
         if not os.access(self.myassetsdir_dir, os.R_OK) :
             raise RuntimeError('Nagios dir "' + self.myassetsdir_dir + '" is not readable or not exists :(')
+        self.logger.debug('Nagios dir "' + self.myassetsdir_dir + '" is readable')
+
+        # Get hostgroups
+        self.hostgroups = self.__get_hostgroups()
 
     def __get_class_name(self) :
         """Method to have instance name of class (str)"""
 
         return self.__class__.__name__
+    
+    
+    def __get_hostgroups(self) :
+        """Method to get Nagios hostgroups and return dic"""
+        
+        # Dic
+        tmpDic = dict()
+        # Open file
+        myhostgroups_file = open(self.myhostgroups_file)
+        self.logger.info('Starting parsing Nagios file "' + self.myhostgroups_file)
+        for line in myhostgroups_file :
+            # Get hostgroup name
+            m = re.findall(r"\shostgroup_name\s(.+)", line)
+            if m :
+                 hostgroup = m[0]
+            # Get members
+            m = re.findall(r"\smembers\s(.+)", line)
+            if m :
+                members = m[0].split(',')
+            # End of hostgroup
+            if re.match(r"}", line) :
+                if members[0] == '*' :
+                    self.logger.debug('Ignore hostgroup "' + hostgroup + '" as members = *')
+                else :
+                    tmpDic[hostgroup] = members
+                    self.logger.debug('Members of "' + hostgroup + '" : ' + str(members))
+                # Reset variables
+                del members
+                del hostgroup
+        # Close file and return dictionnary
+        myhostgroups_file.close()  
+        self.logger.info('End of parsing Nagios file "' + self.myhostgroups_file)
+        return tmpDic
