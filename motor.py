@@ -40,7 +40,7 @@ def main() :
 
     # MNCM objects instance
     try :
-        inst_mncm = MncmMotor(Config.get('NAGIOS','myhostgroups'), Config.get('NAGIOS','myassetsdir'), Config.get('GLOBAL','application'))
+        inst_mncm = MncmMotor(Config.get('GLOBAL','application'), Config.get('NAGIOS','myhostgroups'), Config.get('NAGIOS','myassetsdir'))
     except Exception as e :
         logger.error('RunTimeError during instance creation : %s', str(e))
         raise RuntimeError('Exception during instance creation : ' + str(e))
