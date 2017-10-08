@@ -63,7 +63,7 @@ def main() :
         
         # List clients
         if args.action == 'list-clients' :
-            logger.info('Request to get the Nagios client(s) Ascii Table')
+            logger.info('Request to get the Nagios Client(s) Ascii Table')
             # Ascii table
             myAsciiTable = [['Client name','Address','Type','Nagios Filename']]
             for key, value in inst_mncm.hosts.items() :
