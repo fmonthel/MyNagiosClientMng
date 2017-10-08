@@ -34,7 +34,7 @@ def main() :
 
     # Options
     parser = argparse.ArgumentParser(description='Simple tool to manage client into Nagios config files')
-    parser.add_argument('--action', action='store', dest='action', choices=['list-hostgroups'], required=True)
+    parser.add_argument('--action', action='store', dest='action', choices=['list-hostgroups','list-clients'], required=True)
     args = parser.parse_args()
 
     # MNCM objects instance
@@ -60,17 +60,39 @@ def main() :
             myTable = AsciiTable(myAsciiTable)
             myTable.inner_footing_row_border = True
             myTable.justify_columns[1] = 'right'
+        
+        # List clients
+        if args.action == 'list-clients' :
+            logger.info('Request to get the Nagios client(s) Ascii Table')
+            # Ascii table
+            myAsciiTable = [['Client name','Address','Type']]
+            for key, value in inst_mncm.hosts.items() :
+                # Build list for output
+                tmpdata = list()
+                tmpdata.append(value['hostname']) # Hostname
+                tmpdata.append(key) # Address
+                tmpdata.append(value['hosttype']) # Hosttype
+                # Add tmpdata list to myAsciiTable
+                myAsciiTable.append(tmpdata)
+            # Create AsciiTable and total
+            tmpdata = list()
+            tmpdata.append("Total : " + str(len(myAsciiTable) - 1) + " row(s)")
+            tmpdata.append("")
+            tmpdata.append("")
+            myAsciiTable.append(tmpdata)
+            myTable = AsciiTable(myAsciiTable)
+            myTable.inner_footing_row_border = True
 
-            # End script
-            time_stop = datetime.datetime.now()
-            time_delta = time_stop - time_start
+        # End script
+        time_stop = datetime.datetime.now()
+        time_delta = time_stop - time_start
 
-            # Output data
-            print "######### DATE : %s - APP : %s #########" % (time_start.strftime("%Y-%m-%d"),Config.get('GLOBAL','application'))
-            print "- Start time : %s" % (time_start.strftime("%Y-%m-%d %H:%M:%S"))
-            print "- Finish time : %s" % (time_stop.strftime("%Y-%m-%d %H:%M:%S"))
-            print "- Delta time : %d second(s)" % (time_delta.total_seconds())
-            print myTable.table
+        # Output data
+        print "######### DATE : %s - APP : %s #########" % (time_start.strftime("%Y-%m-%d"),Config.get('GLOBAL','application'))
+        print "- Start time : %s" % (time_start.strftime("%Y-%m-%d %H:%M:%S"))
+        print "- Finish time : %s" % (time_stop.strftime("%Y-%m-%d %H:%M:%S"))
+        print "- Delta time : %d second(s)" % (time_delta.total_seconds())
+        print myTable.table
 
     except Exception as e :
         logger.error('RunTimeError during instance creation : %s', str(e))
