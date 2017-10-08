@@ -98,6 +98,7 @@ class MncmMotor :
                     tmpDic[address] = dict()
                     tmpDic[address]['hosttype'] = hosttype
                     tmpDic[address]['hostname'] = hostname
+                    tmpDic[address]['filename'] = myhost_file
                     self.logger.debug('New host detected : "' + address + '" : ' + str(tmpDic[address]))
                     # Reset variables
                     del hosttype
