@@ -21,7 +21,7 @@ class MncmMotor :
         self.myhostgroups_file = myhostgroups_file
         self.myassetsdir_dir = myassetsdir_dir
         self.app_name = app_name
-        
+
         # Testing readable file and dir
         if not os.access(self.myhostgroups_file, os.R_OK) :
             raise RuntimeError('Nagios file "' + self.myhostgroups_file + '" is not readable or not exists :(')
