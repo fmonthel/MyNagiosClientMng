@@ -14,7 +14,7 @@ class MncmMotor :
         # Logger
         self.logger = logging.getLogger(app_name+'.'+self.class_name)
         self.logger.info('Creating an instance of %s', self.class_name)
-        
+
         # Store values
         if not isinstance(app_name, str) or not isinstance(myhostgroups_file, str) or not isinstance(myassetsdir_dir, str) :
             raise TypeError('Invalid type : app_name, myhostgroups_file, myassetsdir_dir must be a string')
@@ -67,6 +67,6 @@ class MncmMotor :
                 del members
                 del hostgroup
         # Close file and return dictionnary
-        myhostgroups_file.close()  
+        myhostgroups_file.close()
         self.logger.info('End of parsing Nagios file "' + self.myhostgroups_file)
         return tmpDic

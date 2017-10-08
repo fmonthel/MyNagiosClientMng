@@ -51,7 +51,7 @@ def main() :
                 tmpdata = list()
                 tmpdata.append(key) # Hostgroup
                 tmpdata.append(str(len(value))) # Number of clients
-                # Add tmpdata list to myAsciiTable 
+                # Add tmpdata list to myAsciiTable
                 myAsciiTable.append(tmpdata)
             # Create AsciiTable and total
             tmpdata = list()
@@ -72,7 +72,7 @@ def main() :
             print "- Finish time : %s" % (time_stop.strftime("%Y-%m-%d %H:%M:%S"))
             print "- Delta time : %d second(s)" % (time_delta.total_seconds())
             print myTable.table
-            
+
     except Exception as e :
         logger.error('RunTimeError during instance creation : %s', str(e))
         raise RuntimeError('Exception during instance creation : ' + str(e))
