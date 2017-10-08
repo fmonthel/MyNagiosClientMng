@@ -8,7 +8,6 @@
 #
 
 import os
-import re
 import ConfigParser
 import argparse
 import logging
