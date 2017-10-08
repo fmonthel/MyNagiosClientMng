@@ -106,5 +106,4 @@ class MncmMotor :
             # Close file
             myhost.close()
         self.logger.info('End of parsing Nagios directory "' + self.myassetsdir_dir + '"')
-        return tmpDic
-            
+        return tmpDic        
