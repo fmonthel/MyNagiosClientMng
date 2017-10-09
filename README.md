@@ -69,18 +69,41 @@ Cli to manage add and removal of clients into Nagios
     INFO:MyNagiosClientMng.MncmMotor:End of parsing Nagios file "/srv/flaprdmon01/etc/nagios/objects/myhostgroups.cfg"
     INFO:MyNagiosClientMng.MncmMotor:Starting parsing Nagios directory "/srv/flaprdmon01/etc/nagios/objects/assets"
     INFO:MyNagiosClientMng.MncmMotor:End of parsing Nagios directory "/srv/flaprdmon01/etc/nagios/objects/assets"
-    INFO:MyNagiosClientMng:Check if client "ap3.flox-arts.in"+ is not already part of this configuration
+    INFO:MyNagiosClientMng:Check if client "ap3.flox-arts.in" is not already part of this configuration
     INFO:MyNagiosClientMng:Check if hostgroup(s) "['ssh-servers', 'ntp-servers']" is part of this configuration
     INFO:MyNagiosClientMng:Adding client "ap3.flox-arts.in" in the Nagios configuration with hostgroup(s) "['ssh-servers', 'ntp-servers']"
     INFO:MyNagiosClientMng.MncmMotor:Creation of the file "/srv/flaprdmon01/etc/nagios/objects/assets/ap3.flox-arts.in.cfg"
     INFO:MyNagiosClientMng.MncmMotor:Rewrite of the Nagios Hostgroup(s) file "/srv/flaprdmon01/etc/nagios/objects/myhostgroups.cfg"
     INFO:MyNagiosClientMng.MncmMotor:End of rewriting of the Nagios Hostgroup(s) file "/srv/flaprdmon01/etc/nagios/objects/myhostgroups.cfg"
     ######### DATE : 2017-10-08 - APP : MyNagiosClientMng #########
-    - Start time : 2017-10-08 22:46:11
-    - Finish time : 2017-10-08 22:46:11
+    - Start time : 2017-10-08 23:36:16
+    - Finish time : 2017-10-08 23:36:16
     - Delta time : 0 second(s)
-    +------------------+----------------+-------------------------+
-    | Client address   | Type           | Hostgroup(s)            |
-    +------------------+----------------+-------------------------+
-    | ap3.flox-arts.in | generic-switch | ssh-servers,ntp-servers |
-    +------------------+----------------+-------------------------+
+    +------------------+----------------+-------------------------+--------+
+    | Client address   | Type           | Hostgroup(s)            | Action |
+    +------------------+----------------+-------------------------+--------+
+    | ap3.flox-arts.in | generic-switch | ssh-servers,ntp-servers | Added  |
+    +------------------+----------------+-------------------------+--------+
+
+## To remove Nagios Client :
+
+    python remove-client.py --address ap3.flox-arts.in
+    INFO:MyNagiosClientMng.MncmMotor:Creating an instance of MncmMotor
+    INFO:MyNagiosClientMng.MncmMotor:Starting parsing Nagios file "/srv/flaprdmon01/etc/nagios/objects/myhostgroups.cfg"
+    INFO:MyNagiosClientMng.MncmMotor:End of parsing Nagios file "/srv/flaprdmon01/etc/nagios/objects/myhostgroups.cfg"
+    INFO:MyNagiosClientMng.MncmMotor:Starting parsing Nagios directory "/srv/flaprdmon01/etc/nagios/objects/assets"
+    INFO:MyNagiosClientMng.MncmMotor:End of parsing Nagios directory "/srv/flaprdmon01/etc/nagios/objects/assets"
+    INFO:MyNagiosClientMng:Check if client "ap3.flox-arts.in" is part of this configuration
+    INFO:MyNagiosClientMng:Removing client "ap3.flox-arts.in" from the Nagios configuration
+    INFO:MyNagiosClientMng.MncmMotor:Deletion of the file "/srv/flaprdmon01/etc/nagios/objects/assets/ap3.flox-arts.in.cfg"
+    INFO:MyNagiosClientMng.MncmMotor:Rewrite of the Nagios Hostgroup(s) file "/srv/flaprdmon01/etc/nagios/objects/myhostgroups.cfg"
+    INFO:MyNagiosClientMng.MncmMotor:End of rewriting of the Nagios Hostgroup(s) file "/srv/flaprdmon01/etc/nagios/objects/myhostgroups.cfg"
+    ######### DATE : 2017-10-08 - APP : MyNagiosClientMng #########
+    - Start time : 2017-10-08 23:35:03
+    - Finish time : 2017-10-08 23:35:03
+    - Delta time : 0 second(s)
+    +------------------+---------+
+    | Client address   | Action  |
+    +------------------+---------+
+    | ap3.flox-arts.in | Removed |
+    +------------------+---------+
