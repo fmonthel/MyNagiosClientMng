@@ -7,7 +7,7 @@ Cli to manage add and removal of clients into Nagios
 
 ## To list the Nagios Hostgroup(s) :
 
-    python motor.py --action list-hostgroups
+    python inventory.py --action list-hostgroups
     INFO:MyNagiosClientMng.MncmMotor:Creating an instance of MncmMotor
     INFO:MyNagiosClientMng.MncmMotor:Starting parsing Nagios file "/srv/flaprdmon01/etc/nagios/objects/myhostgroups.cfg"
     INFO:MyNagiosClientMng.MncmMotor:End of parsing Nagios file "/srv/flaprdmon01/etc/nagios/objects/myhostgroups.cfg"
@@ -38,7 +38,7 @@ Cli to manage add and removal of clients into Nagios
 
 ## To list the Nagios Client(s) :
 
-    python motor.py --action list-clients
+    python inventory.py --action list-clients
     INFO:MyNagiosClientMng.MncmMotor:Creating an instance of MncmMotor
     INFO:MyNagiosClientMng.MncmMotor:Starting parsing Nagios file "/srv/flaprdmon01/etc/nagios/objects/myhostgroups.cfg"
     INFO:MyNagiosClientMng.MncmMotor:End of parsing Nagios file "/srv/flaprdmon01/etc/nagios/objects/myhostgroups.cfg"

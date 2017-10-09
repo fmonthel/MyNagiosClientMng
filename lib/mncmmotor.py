@@ -22,13 +22,13 @@ class MncmMotor :
         self.myassetsdir_dir = myassetsdir_dir
         self.app_name = app_name
 
-        # Testing readable file and dir
-        if not os.access(self.myhostgroups_file, os.R_OK) :
-            raise RuntimeError('Nagios file "' + self.myhostgroups_file + '" is not readable or not exists :(')
-        self.logger.debug('Nagios file "' + self.myhostgroups_file + '" is readable')
-        if not os.access(self.myassetsdir_dir, os.R_OK) :
-            raise RuntimeError('Nagios dir "' + self.myassetsdir_dir + '" is not readable or not exists :(')
-        self.logger.debug('Nagios dir "' + self.myassetsdir_dir + '" is readable')
+        # Testing writable file and dir
+        if not os.access(self.myhostgroups_file, os.W_OK) :
+            raise RuntimeError('Nagios file "' + self.myhostgroups_file + '" is not writable or not exists :(')
+        self.logger.debug('Nagios file "' + self.myhostgroups_file + '" is writable')
+        if not os.access(self.myassetsdir_dir, os.W_OK) :
+            raise RuntimeError('Nagios dir "' + self.myassetsdir_dir + '" is not writable or not exists :(')
+        self.logger.debug('Nagios dir "' + self.myassetsdir_dir + '" is writable')
 
         # Get hostgroups
         self.hostgroups = self.__get_hostgroups()
@@ -51,6 +51,10 @@ class MncmMotor :
             m = re.findall(r"\shostgroup_name\s(.+)", line)
             if m :
                  hostgroup = m[0]
+            # Get alias name
+            m = re.findall(r"\salias\s(.+)", line)
+            if m :
+                 alias = m[0]
             # Get members
             m = re.findall(r"\smembers\s(.+)", line)
             if m :
@@ -60,7 +64,9 @@ class MncmMotor :
                 if members[0] == '*' :
                     self.logger.debug('Ignore hostgroup "' + hostgroup + '" as members = *')
                 else :
-                    tmpDic[hostgroup] = members
+                    tmpDic[hostgroup] = dict()
+                    tmpDic[hostgroup]['members'] = members
+                    tmpDic[hostgroup]['alias'] = alias
                     self.logger.debug('Members of "' + hostgroup + '" : ' + str(members))
                 # Reset variables
                 del members
@@ -69,6 +75,37 @@ class MncmMotor :
         myhostgroups.close()
         self.logger.info('End of parsing Nagios file "' + self.myhostgroups_file + '"')
         return tmpDic
+
+    def __hostgroup_exist(self, hostgroup) :
+        """Method to check that hostgroup exists"""
+        if not type(hostgroup) is str :
+            raise RuntimeError('Hostgroup type is not good for variable (str expected)"' + hostgroup + '"')
+        if hostgroup in self.hostgroups :
+            return True
+        else :
+            return False
+    
+    def hostgroups_exist(self, hostgroups) :
+        """Method to check that hostgroups exists"""
+        if not type(hostgroups) is list :
+            raise RuntimeError('Hostgroups type is not good for variable (list expected)"' + hostgroups + '"')
+        for hostgroup in hostgroups :
+            if not self.__hostgroup_exist(hostgroup) :
+                raise RuntimeError('This Nagios configuration doesn\'t know the hostgroup "' + hostgroup + '"')
+
+    def __rewrite_hostgroups_file(self) :
+        """Method to rewrite hostgroups file"""
+        myhostgroups = open(self.myhostgroups_file, "w+")
+        self.logger.info('Rewrite of the Nagios Hostgroup(s) file "' + self.myhostgroups_file + '"')
+        # Generic Hostgroup All
+        myhostgroups.write("define hostgroup {\n\thostgroup_name all\n\talias All Devices\n\tmembers *\n}")
+        # We will now parse each hostgroups to add in the file
+        for key, value in self.hostgroups.items() :
+            self.logger.debug('Adding hostgroup "' + str(key) + '" in the Nagios hostgroup file : "' + str(value) + '"')
+            myhostgroups.write("\ndefine hostgroup {\n\thostgroup_name %s\n\talias %s\n\tmembers %s\n}" % (str(key), str(value['alias']), ','.join(map(str, list(set(value['members']))))))
+        # Close file
+        self.logger.info('End of rewriting of the Nagios Hostgroup(s) file "' + self.myhostgroups_file + '"')
+        myhostgroups.close()
 
     def __get_hosts(self) :
         """Method to get Nagios hosts and return dic"""
@@ -107,4 +144,34 @@ class MncmMotor :
             # Close file
             myhost.close()
         self.logger.info('End of parsing Nagios directory "' + self.myassetsdir_dir + '"')
-        return tmpDic        
+        return tmpDic
+
+    def host_exist(self, host) :
+        """Method to check that host exists"""
+        if not type(host) is str :
+            raise RuntimeError('Host type is not good for variable (str expected)"' + host + '"')
+        if host in self.hosts :
+            return True
+        else :
+            return False
+
+    def add_host(self, host, hostgroups, hosttype) :
+        """Method to add client into the Nagios configuration"""
+        if not type(host) is str :
+            raise RuntimeError('Host type is not good for variable (str expected)"' + host + '"')
+        if not type(hostgroups) is list :
+            raise RuntimeError('Hostgroups type is not good for variable (list expected)"' + hostgroups + '"')
+        if not type(hosttype) is str :
+            raise RuntimeError('Hosttype type is not good for variable (str expected)"' + hosttype + '"')
+        # Creation file into assetdir
+        myhost_file = os.path.join(self.myassetsdir_dir + '/' + host + '.cfg')
+        self.logger.info('Creation of the file "' + myhost_file + '"')
+        myhost = open(myhost_file, "w+")
+        myhost.write("define host {\n\tuse %s\n\thost_name %s\n\taddress %s\n}" % (hosttype, host, host))
+        myhost.close()
+        # Adding the host into hostgroups
+        for hostgroup in hostgroups :
+            self.hostgroups[hostgroup]['members'].append(host)
+            self.logger.debug('Adding host "' + host + '" into the hostgroup "' + hostgroup + '"')
+        # Rewrite of the Nagios Hostgroup file
+        self.__rewrite_hostgroups_file()
