@@ -78,7 +78,7 @@ class MncmMotor :
 
     def __hostgroup_exist(self, hostgroup) :
         """Method to check that hostgroup exists"""
-        if not isinstance((hostgroup, str) :
+        if not isinstance(hostgroup, str) :
             raise RuntimeError('Hostgroup type is not good for variable (str expected)"' + hostgroup + '"')
         if hostgroup in self.hostgroups :
             return True
