@@ -51,7 +51,7 @@ def main() :
         myAsciiTable = [['Client address','Action']]
         tmpdata = list()
         tmpdata.append(str(args.address)) # Address
-        tmpdata.append('Removed') # Hosttype
+        tmpdata.append('Removed') # Action
         # Add tmpdata list to myAsciiTable
         myAsciiTable.append(tmpdata)
         myTable = AsciiTable(myAsciiTable)
