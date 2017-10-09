@@ -34,7 +34,7 @@ def main() :
 
     # Options
     parser = argparse.ArgumentParser(description='Simple tool to list clients and hostgroups from Nagios config files')
-    parser.add_argument('--action', action='store', dest='action', choices=['list-hostgroups','list-clients'], required=True)    
+    parser.add_argument('--action', action='store', dest='action', choices=['list-hostgroups','list-clients'], required=True)
     args = parser.parse_args()
 
     try :

@@ -36,7 +36,7 @@ def main() :
     parser = argparse.ArgumentParser(description='Simple tool to add client into Nagios config files')
     parser.add_argument('--address', action='store', dest='address', help='FQDN of the asset', required=True)
     parser.add_argument('--hosttype', action='store', dest='hosttype', choices=['linux-server','generic-switch'], required=True)
-    parser.add_argument('--hostgroups', action='store', dest='hostgroups', help='List of hostgroup(s) comma separated', required=True)    
+    parser.add_argument('--hostgroups', action='store', dest='hostgroups', help='List of hostgroup(s) comma separated', required=True)
     args = parser.parse_args()
 
     try :

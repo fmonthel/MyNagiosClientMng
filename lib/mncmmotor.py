@@ -78,16 +78,16 @@ class MncmMotor :
 
     def __hostgroup_exist(self, hostgroup) :
         """Method to check that hostgroup exists"""
-        if not type(hostgroup) is str :
+        if not isinstance((hostgroup, str) :
             raise RuntimeError('Hostgroup type is not good for variable (str expected)"' + hostgroup + '"')
         if hostgroup in self.hostgroups :
             return True
         else :
             return False
-    
+
     def hostgroups_exist(self, hostgroups) :
         """Method to check that hostgroups exists"""
-        if not type(hostgroups) is list :
+        if not isinstance(hostgroups, list) :
             raise RuntimeError('Hostgroups type is not good for variable (list expected)"' + hostgroups + '"')
         for hostgroup in hostgroups :
             if not self.__hostgroup_exist(hostgroup) :
@@ -148,7 +148,7 @@ class MncmMotor :
 
     def host_exist(self, host) :
         """Method to check that host exists"""
-        if not type(host) is str :
+        if not isinstance(host, str) :
             raise RuntimeError('Host type is not good for variable (str expected)"' + host + '"')
         if host in self.hosts :
             return True
@@ -157,11 +157,11 @@ class MncmMotor :
 
     def add_host(self, host, hostgroups, hosttype) :
         """Method to add client into the Nagios configuration"""
-        if not type(host) is str :
+        if not isinstance(host, str) :
             raise RuntimeError('Host type is not good for variable (str expected)"' + host + '"')
-        if not type(hostgroups) is list :
+        if not isinstance(hostgroups, list) :
             raise RuntimeError('Hostgroups type is not good for variable (list expected)"' + hostgroups + '"')
-        if not type(hosttype) is str :
+        if not isinstance(hosttype, str) :
             raise RuntimeError('Hosttype type is not good for variable (str expected)"' + hosttype + '"')
         # Creation file into assetdir
         myhost_file = os.path.join(self.myassetsdir_dir + '/' + host + '.cfg')
