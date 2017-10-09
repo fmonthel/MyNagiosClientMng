@@ -2,7 +2,7 @@
 #
 # add-client.py
 #
-# Simple tool to add client to Nagios config files
+# Simple tool to remove client to Nagios config files
 #
 # Author: Florent MONTHEL (fmonthel@flox-arts.net)
 #
@@ -33,32 +33,25 @@ def main() :
     logger.addHandler(handler)
 
     # Options
-    parser = argparse.ArgumentParser(description='Simple tool to add client into Nagios config files')
+    parser = argparse.ArgumentParser(description='Simple tool to remove client from Nagios config files')
     parser.add_argument('--address', action='store', dest='address', help='FQDN of the asset', required=True)
-    parser.add_argument('--hosttype', action='store', dest='hosttype', choices=['linux-server','generic-switch'], required=True)
-    parser.add_argument('--hostgroups', action='store', dest='hostgroups', help='List of hostgroup(s) comma separated', required=True)
     args = parser.parse_args()
 
     try :
         # MNCM objects instance
         inst_mncm = MncmMotor(Config.get('GLOBAL','application'), Config.get('NAGIOS','myhostgroups'), Config.get('NAGIOS','myassetsdir'))
-        # Check if the client doesn't exist already
-        logger.info('Check if client "' + str(args.address) + '" is not already part of this configuration')
-        if inst_mncm.host_exist(str(args.address)) :
-            raise RuntimeError('The client "' + str(args.address) + '" is already part of this configuration')
-        # Check if the hostgroups exist
-        logger.info('Check if hostgroup(s) "' + str(args.hostgroups.split(',')) + '" is part of this configuration')
-        inst_mncm.hostgroups_exist(str(args.hostgroups).split(','))
-        # We can add the client :)
-        logger.info('Adding client "' + str(args.address) + '" in the Nagios configuration with hostgroup(s) "' + str(args.hostgroups.split(',')) + '"')
-        inst_mncm.add_host(str(args.address),str(args.hostgroups).split(','),str(args.hosttype))
+        # Check if the client exist already
+        logger.info('Check if client "' + str(args.address) + '" is part of this configuration')
+        if not inst_mncm.host_exist(str(args.address)) :
+            raise RuntimeError('The client "' + str(args.address) + '" is not part of this configuration')
+        # We can remove the client :)
+        logger.info('Removing client "' + str(args.address) + '" from the Nagios configuration')
+        inst_mncm.remove_host(str(args.address))
         # Ascii table
-        myAsciiTable = [['Client address','Type','Hostgroup(s)','Action']]
+        myAsciiTable = [['Client address','Action']]
         tmpdata = list()
         tmpdata.append(str(args.address)) # Address
-        tmpdata.append(str(args.hosttype)) # Hosttype
-        tmpdata.append(str(args.hostgroups)) # Hostgroup(s)
-        tmpdata.append('Added') # Action
+        tmpdata.append('Removed') # Hosttype
         # Add tmpdata list to myAsciiTable
         myAsciiTable.append(tmpdata)
         myTable = AsciiTable(myAsciiTable)

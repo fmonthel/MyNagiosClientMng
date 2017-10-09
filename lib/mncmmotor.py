@@ -65,7 +65,7 @@ class MncmMotor :
                     self.logger.debug('Ignore hostgroup "' + hostgroup + '" as members = *')
                 else :
                     tmpDic[hostgroup] = dict()
-                    tmpDic[hostgroup]['members'] = members
+                    tmpDic[hostgroup]['members'] = list(set(members))
                     tmpDic[hostgroup]['alias'] = alias
                     self.logger.debug('Members of "' + hostgroup + '" : ' + str(members))
                 # Reset variables
@@ -173,5 +173,22 @@ class MncmMotor :
         for hostgroup in hostgroups :
             self.hostgroups[hostgroup]['members'].append(host)
             self.logger.debug('Adding host "' + host + '" into the hostgroup "' + hostgroup + '"')
+        # Rewrite of the Nagios Hostgroup file
+        self.__rewrite_hostgroups_file()
+
+    def remove_host(self, host) :
+        """Method to remove client into the Nagios configuration"""
+        if not isinstance(host, str) :
+            raise RuntimeError('Host type is not good for variable (str expected)"' + host + '"')
+        # Deletion of the file into assetdir
+        myhost_file = os.path.join(self.myassetsdir_dir + '/' + host + '.cfg')
+        if os.path.isfile(myhost_file) :
+            os.remove(myhost_file)
+            self.logger.info('Deletion of the file "' + myhost_file + '"')
+        # Deletion of the host into hostgroups
+        for key, value in self.hostgroups.items() :
+            if value['members'].count(host) > 0 :
+                self.hostgroups[key]['members'].remove(host)
+                self.logger.debug('Removing host "' + host + '" from the hostgroup "' + key + '"')
         # Rewrite of the Nagios Hostgroup file
         self.__rewrite_hostgroups_file()
